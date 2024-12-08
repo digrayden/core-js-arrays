@@ -271,8 +271,9 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size */) {
-  throw new Error('Not implemented');
+function createNDimensionalArray(n, size) {
+  if (n === 1) return Array(size).fill(0);
+  return Array(size).fill(createNDimensionalArray(n - 1, size));
 }
 
 /**
@@ -504,8 +505,19 @@ function findCommonElements(arr1, arr2) {
  *    findLongestIncreasingSubsequence([3, 10, 2, 1, 20]) => 2
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
-function findLongestIncreasingSubsequence(/* nums */) {
-  throw new Error('Not implemented');
+function findLongestIncreasingSubsequence(nums) {
+  if (nums.length === 0) return 0;
+  const dp = nums.map(() => 1);
+  nums.reduce((acc, curr, i) => {
+    nums.slice(0, i).reduce((innerAcc, prev, j) => {
+      if (curr > prev) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+      return innerAcc;
+    });
+    return acc;
+  }, []);
+  return Math.max(...dp);
 }
 
 /**
@@ -539,8 +551,10 @@ function propagateItemsByPositionIndex(arr) {
  *    shiftArray(['a', 'b', 'c', 'd'], -1) => ['b', 'c', 'd', 'a']
  *    shiftArray([10, 20, 30, 40, 50], -3) => [40, 50, 10, 20, 30]
  */
-function shiftArray(/* arr, n */) {
-  throw new Error('Not implemented');
+function shiftArray(arr, n) {
+  const len = arr.length;
+  const shift = ((n % len) + len) % len;
+  return arr.slice(-shift).concat(arr.slice(0, -shift));
 }
 
 /**
@@ -591,8 +605,20 @@ function sortDigitNamesByNumericOrder(arr) {
  *   swapHeadAndTail([]) => []
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const len = arr.length;
+  const half = Math.floor(len / 2);
+
+  if (len <= 1) return arr;
+
+  const head = arr.slice(0, half);
+  const tail = arr.slice(-half);
+
+  if (len % 2 === 0) {
+    return tail.concat(head);
+  }
+
+  return tail.concat(arr[half], head);
 }
 
 module.exports = {
